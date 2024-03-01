@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 import torch
 from transformers import AutoTokenizer, AutoModel
 import torch.nn.functional as F

@@ -1,0 +1,7 @@
+fastapi
+torch
+transformers
+huggingface-hub
+numpy
+pandas
+json
