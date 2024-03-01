@@ -4,5 +4,4 @@ transformers
 huggingface-hub
 numpy
 pandas
-json
 python-multipart
