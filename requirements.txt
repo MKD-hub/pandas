@@ -5,3 +5,4 @@ huggingface-hub
 numpy
 pandas
 python-multipart
+uvicorn
