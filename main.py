@@ -2,7 +2,14 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import FileResponse
 from FilterJSON import filter
 from Tagger import calculateSimilarity
+import os
 
+if not os.path.exists('./csv'):
+    os.mkdir('./csv')
+
+if not os.path.exists('./JSON'):
+    os.mkdir('./JSON')
+    
 app = FastAPI()
 
 
@@ -21,4 +28,4 @@ async def upload_file(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="https://pandas-1txx.onrender.com", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -78,7 +78,7 @@ def calculateSimilarity(filename):
         results.append({
             'description': target_sentence,
             'link': links[i], # Include the link for each job description
-            'sims': similarities['most_similar_items']
+            'tags': similarities['most_similar_items']
         })
 
     # Format the results in the desired JSON structure
