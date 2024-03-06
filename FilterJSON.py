@@ -23,7 +23,7 @@ def filter(file):
 
     df_filtered = pd.DataFrame()
     description_pattern = r"Description: (.*)"
-
+    title_pattern = r"Job Title: (.*?) Job Type:"
     # Load the JSON file
     
     df = pd.read_json(file)
@@ -36,13 +36,19 @@ def filter(file):
         try:
             content = job.get('content')
             link = job.get('link')
+            date = job.get('date')
 
+            timestamp = date * 1000
+            date = datetime.fromtimestamp(timestamp / 1000)
+            
             if content:
                 description_match = re.search(description_pattern, content)
+                title_match = re.search(title_pattern, content)
                 # print(description_match.group(1));
 
                 description = description_match.group(1) or "" # in cases where there's no match
-                new_row = pd.DataFrame({'job_description': [description], 'link': [link]})  
+                title = title_match.group(1) or ""
+                new_row = pd.DataFrame({'date': [date], 'job_title': [title], 'job_description': [description], 'link': [link]})  
 
             if is_english(description_match.group(1)):
                 df_filtered = df_filtered._append(new_row, ignore_index=True)

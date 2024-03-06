@@ -18,8 +18,61 @@ model = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
 
 # Comparison sentences, same as attributes on user profile
 
-comparison_sentences = ["Software Design And Development", "Media And Communication", "Food And Drink Preparation Or Service", "Information Technology", "Accounting And Finance", "Creative Art And Design", "Architecture And Urban Planning", "Construction And Civil Engineering", "Health Care", "Hospitality And Tourism", "Translation And Transcription", "Manufacturing And Production",
-"Logistics And Supply Chain", "Installation And Maintenance Technician", "Sales And Promotion", "Purchasing And Procurement", "Secretarial And Office Management", "Security And Safety", "Multimedia Content Production", "Horticulture", "Agriculture", "Livestock And Animal Husbandry", "Aeronautics And Aerospace", "Entertainment", "Fashion Design", "Clothing And Textile", "Project Management And Administration", "Business And Commerce", "Human Resources And Talent Management", "Mechanical And Electrical Engineering", "Chemical And Biomedical Engineering", "Environmental And Energy Engineering", "Research And Data Analytics", "Psychiatry, Psychology And Social Work", "Law", "Beauty And Grooming", "Labor Work And Masonry", "Teaching And Tutor", "Training And Mentorship", "Pharmaceutical", "Customer Service And Care", "Event Management And Organization", "Transportation And Delivery", "Woodwork And Carpentry", "Marketing And Advertisement", "Shop And Office Attendant", "Broker And Case Closer", "Advisory And Consultancy", "Janitorial And Other Office Services", "Documentation And Writing Services", "Veterinary", "Data Mining And Analytics", "Gardening And Landscaping" ]
+comparison_sentences = [
+    "Software Design And Development", 
+    "Media And Communication", 
+    "Food And Drink Preparation Or Service", 
+    "Information Technology", 
+    "Accounting And Finance", 
+    "Creative Art And Design", 
+    "Architecture And Urban Planning", 
+    "Construction And Civil Engineering", 
+    "Health Care", 
+    "Hospitality And Tourism", 
+    "Translation And Transcription", 
+    "Manufacturing And Production",
+    "Logistics And Supply Chain", 
+    "Installation And Maintenance Technician", 
+    "Sales And Promotion", 
+    "Purchasing And Procurement", 
+    "Secretarial And Office Management", 
+    "Security And Safety", 
+    "Multimedia Content Production", 
+    "Horticulture", 
+    "Agriculture", 
+    "Livestock And Animal Husbandry", 
+    "Aeronautics And Aerospace", 
+    "Entertainment", 
+    "Fashion Design", 
+    "Clothing And Textile", 
+    "Project Management And Administration", 
+    "Business And Commerce", 
+    "Human Resources And Talent Management", 
+    "Mechanical And Electrical Engineering", 
+    "Chemical And Biomedical Engineering", 
+    "Environmental And Energy Engineering", 
+    "Research And Data Analytics", 
+    "Psychiatry, Psychology And Social Work", 
+    "Law", 
+    "Beauty And Grooming", 
+    "Labor Work And Masonry", 
+    "Teaching And Tutor", 
+    "Training And Mentorship", 
+    "Pharmaceutical", 
+    "Customer Service And Care", 
+    "Event Management And Organization", 
+    "Transportation And Delivery", 
+    "Woodwork And Carpentry", 
+    "Marketing And Advertisement", 
+    "Shop And Office Attendant", 
+    "Broker And Case Closer", 
+    "Advisory And Consultancy", 
+    "Janitorial And Other Office Services", 
+    "Documentation And Writing Services", 
+    "Veterinary", 
+    "Data Mining And Analytics", 
+    "Gardening And Landscaping" 
+]
 
 # Tokenize and compute embeddings for comparison sentences
 encoded_comparison_input = tokenizer(comparison_sentences, padding=True, truncation=True, return_tensors='pt')
@@ -58,17 +111,14 @@ def get_similarity(target_sentence: str):
 
 # Read target sentences from CSV
 
-import pandas as pd
-import json
-from datetime import datetime
-
 def calculateSimilarity(filename):
     pathJSON = './JSON/similarity' + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.json'
 
     df = pd.read_csv(filename)
     target_sentences = df['job_description'].tolist()
     links = df['link'].tolist() # Assuming the links are stored in a column named 'link'
-
+    titles = df['job_title'].tolist()
+    dates = df['date'].tolist()
     # Initialize an empty list to store the results
     results = []
 
@@ -76,6 +126,8 @@ def calculateSimilarity(filename):
     for i, target_sentence in enumerate(target_sentences):
         similarities = get_similarity(target_sentence)
         results.append({
+            'date': dates[i],
+            'job_title': titles[i],
             'description': target_sentence,
             'link': links[i], # Include the link for each job description
             'tags': similarities['most_similar_items']

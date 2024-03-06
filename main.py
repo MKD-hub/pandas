@@ -1,7 +1,11 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, Body, HTTPException
 from fastapi.responses import FileResponse
+from datetime import datetime
 from FilterJSON import filter
 from Tagger import calculateSimilarity
+from starlette.requests import Request
+from starlette import status
+import json
 import os
 
 if not os.path.exists('./csv'):
@@ -10,17 +14,27 @@ if not os.path.exists('./csv'):
 if not os.path.exists('./JSON'):
     os.mkdir('./JSON')
     
+
 app = FastAPI()
 
 
 @app.post("/upload/")
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file(request: Request, json_data: dict = Body(...)):
+
+    content_type = request.headers.get("content-type", None)
+    if content_type != "application/json":
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail=f"Unsupported media type {content_type}")
+    
+    json_string = json.dumps(json_data)
+    
     # Save the uploaded file to a temporary file
-    with open(file.filename, "wb") as buffer:
-        buffer.write(await file.read())
+    with open('tempjson', "w") as buffer:
+        buffer.write(json_string)
 
     # Process the JSON file
-    fileName = filter(file.filename)
+    fileName = filter('tempjson')
 
     simsJSON = calculateSimilarity(fileName)
 
