@@ -22,7 +22,7 @@ def is_english(text):
 def filter(file):
 
     df_filtered = pd.DataFrame()
-    description_pattern = r"Description: (.*)"
+    description_pattern = r"Description: (.*?) ___"
     title_pattern = r"Job Title: (.*?) Job Type:"
     # Load the JSON file
     
